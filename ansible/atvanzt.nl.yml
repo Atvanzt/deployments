@@ -1,11 +1,62 @@
 ---
 - hosts: all
+  vars:
+    release_identification: ""
   become: yes
   gather_facts: yes
 
   pre_tasks:
 
+  - name: Get stats of the visits log file
+    ansible.builtin.stat:
+      path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
+    register: stat_visits_log
+    
+  - name: Copy visits_atvanzt.log file when present for conservation
+    ansible.builtin.copy:
+      src: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
+      dest: "{{target_location}}"
+      remote_src: yes
+    when: stat_visits_log
+    
   - name: Remove any previously used web site environment
     ansible.builtin.file:
       path: "{{target_location}}/atvanzt.nl"
       state: absent
+
+  - name: Get current list of releases to determine if there has been any version release at all
+    ansible.builtin.uri:
+      url: "https://api.github.com/repos/atvanzt/atvanzt.nl/releases"
+      method: GET
+      headers:
+        Accept: "application/vnd.github+json"
+        Authorization: "Bearer {{gh_access_token}}"
+        X-GitHub-Api-Version: "2022-11-28" 
+      status_code: 200
+    register: list_of_releases
+
+    # Running the following test from the result of the json of all available releases
+    # makes it possible to determine if there is/are zero, one or more releases
+    # If there is no release at all, this step will be marked as skipped (skipped == false)
+    # that is what we will use to determine if the deployment can be executed at all.
+    # So after this ste use: when: not tag_name_items.skipped (if true means, there was no release found)
+  - name: Found out if there is at least one release available for the atvanzt website
+    debug:
+      msg: "{{ item.tag_name }}"
+    loop: "{{ list_of_releases.json }}"
+    register: tag_name_items
+    
+  - name: Create the website directory
+    ansible.builtin.file:
+      path: "{{target_location}}/atvanzt.nl"
+      state: directory
+      owner: root
+      group: root
+    
+  - name: Create visits_atvanzt.log file when it does not exist
+    ansible.builtin.file:
+      path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
+      state: touch
+      owner: http
+      group: http      
+    when: not stat_visits_log

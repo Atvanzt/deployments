@@ -32,6 +32,9 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Install community general Ansible modules
+        run: ansible-galaxy collection install community.general          
+
     # Start ssh-agent but set it to use the same ssh_auth_sock value.
     # The agent will be running in all steps after this, so it
     # should be one of the first.
