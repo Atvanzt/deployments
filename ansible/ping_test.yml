@@ -6,9 +6,4 @@
   pre_tasks:
 
   - name: Example from an Ansible Playbook
-    ansible.builtin.ping:
-
-  - name: Create the artifacts directory
-    ansible.builtin.file:
-      path: /tmp/artifacts/atvanzt.nl
-      state: directory    
+    ansible.builtin.ping: 
