@@ -17,7 +17,7 @@
       src: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
       dest: "{{target_location}}"
       remote_src: yes
-    when: stat_visits_log
+    when: stat_visits_log.stat.exists
     
   - name: Remove any previously used web site environment
     ansible.builtin.file:
