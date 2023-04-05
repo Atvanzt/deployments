@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: yes
+
+  pre_tasks:
+
+  - name: Remove any previously used web site environment
+    ansible.builtin.file:
+      path: "{{target_location}}/atvanzt.nl
+      state: absent
