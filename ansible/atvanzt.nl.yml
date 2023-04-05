@@ -52,7 +52,7 @@
       state: directory
       owner: root
       group: root
-      mode: '0000'
+      mode: u+r,g-rwx,o-rwx
     
   - name: Create visits_atvanzt.log file when it does not exist
     ansible.builtin.file:
