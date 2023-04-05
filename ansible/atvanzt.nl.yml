@@ -7,5 +7,5 @@
 
   - name: Remove any previously used web site environment
     ansible.builtin.file:
-      path: "{{target_location}}/atvanzt.nl
+      path: "{{target_location}}/atvanzt.nl"
       state: absent
