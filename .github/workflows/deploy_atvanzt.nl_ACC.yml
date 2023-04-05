@@ -84,4 +84,4 @@ jobs:
           
       - name: run playbook
         run: |
-          ansible-playbook -i inventory_acc --extra-vars "gh_access_token=${{secrets.GITHUB_TOKEN}} target_location=${{secrets.TARGET_LOCATION_ACC_ATVANZT_NL}}" ansible/atvanzt.nl.yml
+          ansible-playbook -i inventory_acc --extra-vars "gh_access_token=${{secrets.GITHUB_TOKEN}} gh_atvanzt_nl_access_token=${{secrets.PERSONAL_ACCESS_TOKEN_ATVGITOPS}} target_location=${{secrets.TARGET_LOCATION_ACC_ATVANZT_NL}}" ansible/atvanzt.nl.yml
