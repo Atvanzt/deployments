@@ -52,11 +52,13 @@
       state: directory
       owner: root
       group: root
+      mode: u-rwx,g-rwx,o-rwx
     
   - name: Create visits_atvanzt.log file when it does not exist
     ansible.builtin.file:
       path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
       state: touch
       owner: http
-      group: http      
-    when: not stat_visits_log
+      group: http
+      mode: uXrwx,gXrwx,o-rwx
+    when: not stat_visits_log.stat.exists
