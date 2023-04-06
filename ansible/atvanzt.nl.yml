@@ -112,10 +112,10 @@
   
   - name: Download release assets contaning the ATVANZT website
     ansible.builtin.get_url:
-      url: "{{item.browser_download_url}}"
+      url: "https://api.github.com/repos/atvanzt/atvanzt.nl/releases/assets/{{item.id}}"
       dest: "{{target_location}}"
       headers:
-        Accept: "application/vnd.github+json"
+        Accept: "application/octet-stream"
         Authorization: "Bearer {{gh_atvanzt_nl_access_token}}"
         X-GitHub-Api-Version: "2022-11-28" 
     when: not assets_items.skipped
