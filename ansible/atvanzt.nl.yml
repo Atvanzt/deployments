@@ -1,6 +1,7 @@
 ---
 - hosts: all
   vars:
+    semantic_version: ""
     release_identification: ""
   become: yes
   gather_facts: yes
@@ -62,3 +63,64 @@
       group: http
       mode: u+rwx,g+rwx,o-rwx
     when: not stat_visits_log.stat.exists
+
+  - name: Get the latest release when available 
+    ansible.builtin.uri:
+      url: "https://api.github.com/repos/atvanzt/atvanzt.nl/releases/latest"
+      method: GET
+      headers:
+        Accept: "application/vnd.github+json"
+        Authorization: "Bearer {{gh_atvanzt_nl_access_token}}"
+        X-GitHub-Api-Version: "2022-11-28" 
+      status_code: 200
+    when: not tag_name_items.skipped 
+    register: latest_version 
+
+  - name: Set the semantic version to the latest known version when available 
+    set_fact: semantic_version="{{ latest_version.json.tag_name }}" 
+    when: not tag_name_items.skipped
+
+  - name: Set the release identification
+    set_fact: release_identification="{{ latest_version.json.id }}" 
+    when: not tag_name_items.skipped
+    
+  - name: Log the version to be used for this release
+    debug:
+      msg: "The release version to be deployed is set to: {{ semantic_version }}"
+  
+  - name: Get current list of assets to determine if there has been any asset in the release at all
+    ansible.builtin.uri:
+      url: "https://api.github.com/repos/atvanzt/atvanzt.nl/releases/{{release_identification}}/assets"
+      method: GET
+      headers:
+        Accept: "application/vnd.github+json"
+        Authorization: "Bearer {{gh_atvanzt_nl_access_token}}"
+        X-GitHub-Api-Version: "2022-11-28" 
+      status_code: 200
+    register: list_of_assets
+
+    # Running the following test from the result of the json of all available assets
+    # makes it possible to determine if there is/are zero, one or more assets in a release
+    # If there is no asset at all, this step will be marked as skipped (skipped == false)
+    # that is what we will use to determine if the deployment can be executed at all.
+    # So after this ste use: when: not assets_items.skipped (if true means, there was no release found)
+  - name: Found out if there is at least one release available for the atvanzt website
+    debug:
+      msg: "{{ item.id }}"
+    loop: "{{ list_of_assets.json }}"
+    register: assets_items
+  
+  - name: Download release assets contaning the ATVANZT website
+    ansible.builtin.get_url:
+      url: "/repos/{owner}/{repo}/releases/assets/{item.id}"
+      dest: "{{target_location}}"
+      headers:
+        Accept: "application/vnd.github+json"
+        Authorization: "Bearer {{gh_atvanzt_nl_access_token}}"
+        X-GitHub-Api-Version: "2022-11-28" 
+    when: not assets_items.skipped
+    loop: "{{ list_of_assets.json }}"
+    
+    
+      
+      
