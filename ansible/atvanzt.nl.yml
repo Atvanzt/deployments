@@ -123,10 +123,11 @@
     ansible.builtin.file:
       path: "{{target_location}}/atvanzt.nl"
       state: touch
+      recurse: yes
       owner: http
       group: http
       mode: u+rx,g+rx,o-rwx
-
+      
   - name: Create visits_atvanzt.log file when it did not exist
     ansible.builtin.file:
       path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
@@ -134,7 +135,24 @@
       owner: http
       group: http
       mode: u+rwx,g+rwx,o-rwx
-    when: not stat_visits_log.stat.exists    
+    when: not stat_visits_log.stat.exists     
+
+  - name: Copy visits_atvanzt.log file
+    ansible.builtin.copy:
+      src: "{{target_location}}/atvanzt.nl"
+      dest: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
+      remote_src: yes
+    when: stat_visits_log.stat.exists    
+      
+  - name: Create the website directory
+    ansible.builtin.file:
+      path: "{{target_location}}/atvanzt.nl"
+      state: touch
+      owner: root
+      group: root
+      mode: u-rwx,g-rwx,o-rwx      
+
+
     
     
       
