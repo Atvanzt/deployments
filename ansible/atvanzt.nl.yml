@@ -120,16 +120,14 @@
     when: not assets_items.skipped
     
   - name: Modify permissions
-    ansible.builtin.command:
+    ansible.builtin.shell:
       cmd: chmod -R 550 *
-      args:
-        chdir: "{{target_location}}/atvanzt.nl"
+      chdir: "{{target_location}}/atvanzt.nl"
         
   - name: Modify permission .htaccess
-    ansible.builtin.command:
+    ansible.builtin.shell:
       cmd: chmod 550 .htaccess
-      args:
-        chdir: "{{target_location}}/atvanzt.nl"        
+      chdir: "{{target_location}}/atvanzt.nl"        
 
   - name: Modify ownership
     ansible.builtin.file:
