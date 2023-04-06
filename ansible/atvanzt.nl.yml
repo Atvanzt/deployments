@@ -121,7 +121,7 @@
     
   - name: Modify permissions
     ansible.builtin.file:
-      path: "{{target_location}}/atvanzt.nl/*"
+      path: "{{target_location}}/atvanzt.nl"
       state: touch
       owner: http
       group: http
