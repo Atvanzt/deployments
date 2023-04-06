@@ -112,7 +112,7 @@
   
   - name: Download release assets contaning the ATVANZT website
     ansible.builtin.get_url:
-      url: "https://api.github.com/repos/{owner}/{repo}/releases/assets/{item.id}"
+      url: "https://api.github.com/repos/{owner}/{repo}/releases/assets/{{item.id}}"
       dest: "{{target_location}}"
       headers:
         Accept: "application/vnd.github+json"
