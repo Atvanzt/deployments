@@ -116,7 +116,16 @@
     ansible.builtin.unarchive:
       src: "{{target_location}}/atvanzt.nl.tar.gz"
       dest: "{{target_location}}/atvanzt.nl"
+      remote_src: yes
     when: not assets_items.skipped
+    
+  - name: Modify permissions
+    ansible.builtin.file:
+      path: "{{target_location}}/atvanzt.nl/*"
+      state: touch
+      owner: http
+      group: http
+      mode: u+rx,g+rx,o-rwx
 
   - name: Create visits_atvanzt.log file when it did not exist
     ansible.builtin.file:
