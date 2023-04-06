@@ -106,13 +106,13 @@
     # So after this ste use: when: not assets_items.skipped (if true means, there was no release found)
   - name: Found out if there is at least one release available for the atvanzt website
     debug:
-      msg: "{{ item.id }}"
+      msg: "{{ item.browser_download_url }}"
     loop: "{{ list_of_assets.json }}"
     register: assets_items
   
   - name: Download release assets contaning the ATVANZT website
     ansible.builtin.get_url:
-      url: "https://api.github.com/repos/atvanzt/atvanzt.nl/releases/assets/{{item.id}}"
+      url: "{{item.browser_download_url}}"
       dest: "{{target_location}}"
       headers:
         Accept: "application/vnd.github+json"
