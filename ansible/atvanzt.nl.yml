@@ -55,15 +55,6 @@
       group: root
       mode: u-rwx,g-rwx,o-rwx
     
-  - name: Create visits_atvanzt.log file when it does not exist
-    ansible.builtin.file:
-      path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
-      state: touch
-      owner: http
-      group: http
-      mode: u+rwx,g+rwx,o-rwx
-    when: not stat_visits_log.stat.exists
-
   - name: Get the latest release when available 
     ansible.builtin.uri:
       url: "https://api.github.com/repos/atvanzt/atvanzt.nl/releases/latest"
@@ -120,6 +111,21 @@
         X-GitHub-Api-Version: "2022-11-28" 
     when: not assets_items.skipped
     loop: "{{ list_of_assets.json }}"
+    
+  - name: Extract atvanzt.nl.tar.gz
+    ansible.builtin.unarchive:
+      src: "{{target_location}}/atvanzt.nl.tar.gz"
+      dest: "{{target_location}}/atvanzt.nl"
+    when: not assets_items.skipped
+
+  - name: Create visits_atvanzt.log file when it did not exist
+    ansible.builtin.file:
+      path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
+      state: touch
+      owner: http
+      group: http
+      mode: u+rwx,g+rwx,o-rwx
+    when: not stat_visits_log.stat.exists    
     
     
       
