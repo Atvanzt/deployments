@@ -120,13 +120,24 @@
     when: not assets_items.skipped
     
   - name: Modify permissions
+    ansible.builtin.command:
+      cmd: chmod -R 550 *
+      args:
+        chdir: "{{target_location}}/atvanzt.nl"
+        
+  - name: Modify permission .htaccess
+    ansible.builtin.command:
+      cmd: chmod 550 .htaccess
+      args:
+        chdir: "{{target_location}}/atvanzt.nl"        
+
+  - name: Modify ownership
     ansible.builtin.file:
       path: "{{target_location}}/atvanzt.nl"
       state: directory
       recurse: yes
       owner: http
       group: http
-      mode: u+rx,g+rx,o-rwx
       
   - name: Create visits_atvanzt.log file when it did not exist
     ansible.builtin.file:
@@ -144,7 +155,7 @@
       remote_src: yes
     when: stat_visits_log.stat.exists    
       
-  - name: Create the website directory
+  - name: Make sure correct permissions are set at the root of the website directory
     ansible.builtin.file:
       path: "{{target_location}}/atvanzt.nl"
       state: touch
