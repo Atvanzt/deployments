@@ -130,8 +130,6 @@
           define("REDIRECT_URL", "https://google.com");
           define("META_DESCRIPTION", "Author: Atvanzt, Illustrator: Atvanzt");
           define("LOG_FILENAME", "visits_atvanzt.log");
-          
-          \$ip_whitelist = array("{{ACC_HOST_IP4_ADDRESS}}");
         ?> 
       DELIMITER
     when: not assets_items.skipped
