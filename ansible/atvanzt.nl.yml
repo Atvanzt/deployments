@@ -119,6 +119,23 @@
       remote_src: yes
     when: not assets_items.skipped
     
+    # Create version bump awk script using heredoc
+  - name: Create Ansible inventory file
+    shell: > 
+      cat << DELIMITER > "{{target_location}}/atvanzt.nl/bin/config.php"
+        <?
+          define("APPLICATION_NAME", {{gh_domain_site}});
+          define("SITE_HOSTNAME", {{gh_domain_site}});
+          define("SITE_URL", "https://{{gh_domain_site}}");
+          define("REDIRECT_URL", "https://google.com");
+          define("META_DESCRIPTION", "Author: Atvanzt, Illustrator: Atvanzt");
+          define("LOG_FILENAME", "visits_atvanzt.log");
+          
+          $ip_whitelist = {{gh_ip_white_list}};
+        ?> 
+      DELIMITER
+    when: not assets_items.skipped
+    
   - name: Modify permissions
     ansible.builtin.shell:
       cmd: chmod -R 550 *
