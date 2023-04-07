@@ -16,7 +16,7 @@
   - name: Copy visits_atvanzt.log file when present for conservation
     ansible.builtin.copy:
       src: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
-      dest: "{{target_location}}"
+      dest: "/tmp/atvanzt.nl"
       remote_src: yes
     when: stat_visits_log.stat.exists
     
@@ -104,7 +104,7 @@
   - name: Download release assets contaning the ATVANZT website
     ansible.builtin.get_url:
       url: "https://api.github.com/repos/atvanzt/atvanzt.nl/releases/assets/{{item.id}}"
-      dest: "{{target_location}}/atvanzt.nl.tar.gz"
+      dest: "/tmp/atvanzt.nl/atvanzt.nl.tar.gz"
       headers:
         Accept: "application/octet-stream"
         Authorization: "Bearer {{gh_atvanzt_nl_access_token}}"
@@ -114,7 +114,7 @@
     
   - name: Extract atvanzt.nl.tar.gz
     ansible.builtin.unarchive:
-      src: "{{target_location}}/atvanzt.nl.tar.gz"
+      src: "/tmp/atvanzt.nl/atvanzt.nl.tar.gz"
       dest: "{{target_location}}/atvanzt.nl"
       remote_src: yes
     when: not assets_items.skipped
@@ -162,7 +162,7 @@
 
   - name: Copy visits_atvanzt.log file
     ansible.builtin.copy:
-      src: "{{target_location}}/visits_atvanzt.log"
+      src: "/tmp/atvanzt.nl/visits_atvanzt.log"
       dest: "{{target_location}}/atvanzt.nl"
       remote_src: yes
     when: stat_visits_log.stat.exists
@@ -183,6 +183,10 @@
       group: root
       mode: u-rwx,g-rwx,o-rwx      
 
+  - name: Remove temporary files
+    ansible.builtin.file:
+      path: "/tmp/atvanzt.nl"
+      state: absent
 
     
     
