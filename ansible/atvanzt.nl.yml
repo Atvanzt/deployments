@@ -119,7 +119,7 @@
       remote_src: yes
     when: not assets_items.skipped
     
-    # Create version bump awk script using heredoc
+    # Create the correct configuration
   - name: Create Ansible inventory file
     shell: > 
       cat << DELIMITER > "{{target_location}}/atvanzt.nl/bin/config.php"
