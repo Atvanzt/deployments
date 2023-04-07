@@ -78,7 +78,7 @@
   - name: Log the version to be used for this release
     debug:
       msg: "The release version to be deployed is set to: {{ semantic_version }}"
-  
+
   - name: Get current list of assets to determine if there has been any asset in the release at all
     ansible.builtin.uri:
       url: "https://api.github.com/repos/atvanzt/atvanzt.nl/releases/{{release_identification}}/assets"
@@ -90,6 +90,11 @@
       status_code: 200
     register: list_of_assets
 
+  - name: Create the temporary directory
+    ansible.builtin.file:
+      path: "/tmp/atvanzt.nl"
+      state: directory
+      
     # Running the following test from the result of the json of all available assets
     # makes it possible to determine if there is/are zero, one or more assets in a release
     # If there is no asset at all, this step will be marked as skipped (skipped == false)
