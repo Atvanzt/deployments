@@ -165,8 +165,8 @@
 
   - name: Copy visits_atvanzt.log file
     ansible.builtin.copy:
-      src: "{{target_location}}/atvanzt.nl"
-      dest: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
+      src: "{{target_location}}/visits_atvanzt.log"
+      dest: "{{target_location}}/atvanzt.nl"
       remote_src: yes
     when: stat_visits_log.stat.exists    
       
