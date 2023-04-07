@@ -8,6 +8,11 @@
 
   pre_tasks:
 
+  - name: Create the temporary directory
+    ansible.builtin.file:
+      path: "/tmp/atvanzt.nl"
+      state: directory
+      
   - name: Get stats of the visits log file
     ansible.builtin.stat:
       path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
@@ -90,11 +95,6 @@
       status_code: 200
     register: list_of_assets
 
-  - name: Create the temporary directory
-    ansible.builtin.file:
-      path: "/tmp/atvanzt.nl"
-      state: directory
-      
     # Running the following test from the result of the json of all available assets
     # makes it possible to determine if there is/are zero, one or more assets in a release
     # If there is no asset at all, this step will be marked as skipped (skipped == false)
