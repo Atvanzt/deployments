@@ -124,8 +124,8 @@
     shell: > 
       cat << DELIMITER > "{{target_location}}/atvanzt.nl/bin/config.php"
         <?
-          define("APPLICATION_NAME", {{gh_domain_site}});
-          define("SITE_HOSTNAME", {{gh_domain_site}});
+          define("APPLICATION_NAME", "{{gh_domain_site}}");
+          define("SITE_HOSTNAME", "{{gh_domain_site}}");
           define("SITE_URL", "https://{{gh_domain_site}}");
           define("REDIRECT_URL", "https://google.com");
           define("META_DESCRIPTION", "Author: Atvanzt, Illustrator: Atvanzt");
@@ -158,9 +158,6 @@
     ansible.builtin.file:
       path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
       state: touch
-      owner: http
-      group: http
-      mode: u+rwx,g+rwx,o-rwx
     when: not stat_visits_log.stat.exists     
 
   - name: Copy visits_atvanzt.log file
@@ -168,7 +165,15 @@
       src: "{{target_location}}/visits_atvanzt.log"
       dest: "{{target_location}}/atvanzt.nl"
       remote_src: yes
-    when: stat_visits_log.stat.exists    
+    when: stat_visits_log.stat.exists
+
+  - name: Make sure correct permissions are set for the log file
+    ansible.builtin.file:
+      path: "{{target_location}}/atvanzt.nl/visits_atvanzt.log"
+      state: touch
+      owner: http
+      group: http
+      mode: u+rwx,g+rwx,o-rwx
       
   - name: Make sure correct permissions are set at the root of the website directory
     ansible.builtin.file:
