@@ -3,6 +3,7 @@
   vars:
     semantic_version: ""
     release_identification: ""
+    ip_white_list_filename: "/bin/ip_whitelist.json"
   become: yes
   gather_facts: yes
 
@@ -135,9 +136,15 @@
           define("REDIRECT_URL", "https://google.com");
           define("META_DESCRIPTION", "Author: Atvanzt, Illustrator: Atvanzt");
           define("LOG_FILENAME", "visits_atvanzt.log");
+          define("IPWHITELIST_FILENAME", ".{{ip_white_list_filename}}");
         ?> 
       DELIMITER
     when: not assets_items.skipped
+    
+  - name: Create ip_white_list file
+    ansible.builtin.copy:
+      content: {{ip_white_list}}
+      dest: "{{target_location}}/atvanzt.nl{{ip_white_list_filename}}"
     
   - name: Modify permissions
     ansible.builtin.shell:
