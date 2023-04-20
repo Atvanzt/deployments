@@ -126,7 +126,7 @@
     when: not assets_items.skipped
     
     # Create the correct configuration
-  - name: Create Ansible inventory file
+  - name: Create a target specific config file
     shell: > 
       cat << DELIMITER > "{{target_location}}/atvanzt.nl/bin/config.php"
         <?
@@ -141,10 +141,6 @@
       DELIMITER
     when: not assets_items.skipped
     
-  - name: Log the white list variable
-    debug:
-      msg: "White list is: {{ ip_white_list }}"
-      
   - name: Create ip_white_list file
     ansible.builtin.copy:
       content: "{{ip_white_list}}"
