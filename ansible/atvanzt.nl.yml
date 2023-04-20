@@ -141,9 +141,13 @@
       DELIMITER
     when: not assets_items.skipped
     
+  - name: Log the white list variable
+    debug:
+      msg: "White list is: {{ ip_white_list }}"
+      
   - name: Create ip_white_list file
     ansible.builtin.copy:
-      content: """{{ip_white_list}}"""
+      content: "{{ip_white_list}}"
       dest: "{{target_location}}/atvanzt.nl{{ip_white_list_filename}}"
     
   - name: Modify permissions
