@@ -143,7 +143,7 @@
     
   - name: Create ip_white_list file
     ansible.builtin.copy:
-      content: {{ip_white_list}}
+      content: "{ip_white_list}}"
       dest: "{{target_location}}/atvanzt.nl{{ip_white_list_filename}}"
     
   - name: Modify permissions
