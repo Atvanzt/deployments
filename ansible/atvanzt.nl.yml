@@ -136,7 +136,6 @@
           define("REDIRECT_URL", "https://google.com");
           define("META_DESCRIPTION", "Author: Atvanzt, Illustrator: Atvanzt");
           define("LOG_FILENAME", "visits_atvanzt.log");
-          define("IPWHITELIST_FILENAME", ".{{ip_white_list_filename}}");
         ?> 
       DELIMITER
     when: not assets_items.skipped
